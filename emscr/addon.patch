@@ -1,0 +1,83 @@
+diff --git a/emscr/addon_demo.js b/emscr/addon_demo.js
+index af4acf0..5514c06 100644
+--- a/emscr/addon_demo.js
++++ b/emscr/addon_demo.js
+@@ -34,14 +34,12 @@ for (var key in Module) {
+ 
+ // The environment setup code below is customized to use Module.
+ // *** Environment setup code ***
+-var ENVIRONMENT_IS_WEB = typeof window === 'object';
+-// Three configurations we can be running in:
+-// 1) We could be the application main() thread running in the main JS UI thread. (ENVIRONMENT_IS_WORKER == false and ENVIRONMENT_IS_PTHREAD == false)
+-// 2) We could be the application main() thread proxied to worker. (with Emscripten -s PROXY_TO_WORKER=1) (ENVIRONMENT_IS_WORKER == true, ENVIRONMENT_IS_PTHREAD == false)
+-// 3) We could be an application pthread running in a worker. (ENVIRONMENT_IS_WORKER == true and ENVIRONMENT_IS_PTHREAD == true)
+-var ENVIRONMENT_IS_WORKER = typeof importScripts === 'function';
+-var ENVIRONMENT_IS_NODE = typeof process === 'object' && typeof require === 'function' && !ENVIRONMENT_IS_WEB && !ENVIRONMENT_IS_WORKER;
+-var ENVIRONMENT_IS_SHELL = !ENVIRONMENT_IS_WEB && !ENVIRONMENT_IS_NODE && !ENVIRONMENT_IS_WORKER;
++var ENVIRONMENT_IS_FXADDON = true;
++
++var ENVIRONMENT_IS_WEB = false;
++var ENVIRONMENT_IS_WORKER = false;
++var ENVIRONMENT_IS_NODE = false;
++var ENVIRONMENT_IS_SHELL = false;
+ 
+ if (ENVIRONMENT_IS_NODE) {
+   // Expose functionality in the same simple way that the shells work
+@@ -159,8 +157,43 @@ else if (ENVIRONMENT_IS_WEB || ENVIRONMENT_IS_WORKER) {
+   if (typeof Module['setWindowTitle'] === 'undefined') {
+     Module['setWindowTitle'] = function(title) { document.title = title };
+   }
+-}
+-else {
++} else if (ENVIRONMENT_IS_FXADDON) {
++    // This is a weird special case.  We're in a browser,
++    // but some parts of the DOM aren't available.  We also 
++    // need to care about which JS sandbox we're in. 
++    // In the context of offline geo, we are going to be
++    // running in the Chrome process.
++
++    Module['load'] = function load(f) {
++        globalEval(Module['read'](f));
++    };
++
++    if (!Module['print']) {
++        Module['print'] = function print(x) {
++          console.log(x);
++        };
++    }
++
++    if (!Module['printErr']) {
++      Module['printErr'] = Module['print'];
++    }
++
++    if (!Module['arguments']) {
++      Module['arguments'] = [];
++    }
++    if (!Module['thisProgram']) {
++      Module['thisProgram'] = 'private-geo';
++    }
++
++    var { indexedDB } = require('sdk/indexed-db');
++    let { Cu } = require('chrome');
++    Cu.importGlobalProperties(['Blob', 'URL']);
++
++    console.log("Got indexedDB: " + indexedDB);
++    console.log("Got Blob instance: " + new Blob());
++    console.log("Got URL.createObjectURL : " + URL.createObjectURL); 
++
++} else {
+   // Unreachable because SHELL is dependant on the others
+   throw 'Unknown runtime environment. Where are we?';
+ }
+@@ -4708,6 +4741,11 @@ function copyTempDouble(ptr) {
+         }
+         Browser.BlobBuilder = typeof MozBlobBuilder != "undefined" ? MozBlobBuilder : (typeof WebKitBlobBuilder != "undefined" ? WebKitBlobBuilder : (!Browser.hasBlobConstructor ? console.log("warning: no BlobBuilder") : null));
+         Browser.URLObject = typeof window != "undefined" ? (window.URL ? window.URL : window.webkitURL) : undefined;
++        if (ENVIRONMENT_IS_FXADDON) {
++            Browser.URLObject = URL;
++        }
++        console.log("Browser.URLObject = " + Browser.URLObject);
++
+         if (!Module.noImageDecoding && typeof Browser.URLObject === 'undefined') {
+           console.log("warning: Browser does not support creating object URLs. Built-in browser image decoding will not be available.");
+           Module.noImageDecoding = true;
