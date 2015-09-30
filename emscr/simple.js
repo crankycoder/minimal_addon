@@ -12433,6 +12433,16 @@ function _pad($f,$c,$w,$l,$fl) {
  } while(0);
  STACKTOP = sp;return;
 }
+function _printf__async_cb($0) {
+ $0 = $0|0;
+ var $1 = 0, $2 = 0, $AsyncRetVal = 0, label = 0, sp = 0;
+ sp = STACKTOP;
+ $1 = ___async_retval;
+ $AsyncRetVal = HEAP32[$1>>2]|0;
+ $2 = ___async_retval;
+ HEAP32[$2>>2] = $AsyncRetVal;
+ return;
+}
 function _vfprintf__async_cb($0) {
  $0 = $0|0;
  var $$ = 0, $1 = 0, $10 = 0, $11 = 0, $12 = 0, $13 = 0, $14 = 0, $15 = 0, $16 = 0, $17 = 0, $18 = 0, $19 = 0, $2 = 0, $20 = 0, $21 = 0, $22 = 0, $23 = 0, $24 = 0, $25 = 0, $26 = 0;
@@ -12513,16 +12523,6 @@ function _runHttpTrie__async_cb($0) {
  $vararg_ptr5 = ((($10)) + 4|0);
  HEAP32[$vararg_ptr5>>2] = $16;
  (_printf(722,$10)|0);
- return;
-}
-function _printf__async_cb($0) {
- $0 = $0|0;
- var $1 = 0, $2 = 0, $AsyncRetVal = 0, label = 0, sp = 0;
- sp = STACKTOP;
- $1 = ___async_retval;
- $AsyncRetVal = HEAP32[$1>>2]|0;
- $2 = ___async_retval;
- HEAP32[$2>>2] = $AsyncRetVal;
  return;
 }
 function runPostSets() {

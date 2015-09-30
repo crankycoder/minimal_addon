@@ -14,6 +14,11 @@ var page = pageMod.PageMod({
     onAttach: function(worker) {
                   worker.port.on("run_emscr_wget", function(addonMessage) {
                       console.log("Addon received message: ["+addonMessage+"]");
+                      var addon_geo = require("./emscr/addon_geo");
+                      console.log("Addon Geo: " + addon_geo);
+
+                      var addon_geo_mod = addon_geo.factory();
+                      console.log("Addon Geo Mod: " + addon_geo_mod);
                   });
               }
 });
