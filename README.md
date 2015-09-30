@@ -44,8 +44,7 @@ If you click on the cross hair you will see something like this:
     minimaladdon:Addon received message: [ignored_blob] index.js:16
     minimaladdon:Got indexedDB: [object Object] addon_demo.js:192
     minimaladdon:Got Blob instance: [object Blob] addon_demo.js:193
-    minimaladdon:Got URL.createObjectURL : function createObjectURL()
-{
+    minimaladdon:Got URL.createObjectURL : function createObjectURL() {
         [native code]
     } addon_demo.js:194
     minimaladdon:Addon Demo Mod: [object Object] index.js:19
