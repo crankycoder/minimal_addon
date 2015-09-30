@@ -10,6 +10,7 @@ all:
 addon:
 	EXPORT_FUNCS=-s EXPORTED_FUNCTIONS='["_runHttpTrie", "_start_demo"]'
 	emcc $(EXTRA_EMSCRIPTEN_ARGS) $(EXPORT_FUNCS) emscr/demo.cc -o emscr/addon_demo.js
+	patch -p1 emscr/addon_demo.js emscr/addon.patch
 
 run:
 	jpm run
