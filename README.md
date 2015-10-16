@@ -26,7 +26,16 @@ Valid file descriptor! Got fd: 3 for /sample.c
 
 To run the addon code, keep the webserver running.
 
-Then issue:   `make run`
+Build the addon:
+
+```
+make addon
+make patch_addon
+```
+
+Then run the addon:
+
+    `make run`
 
 This will startup a new Firefox with the addon code loaded.
 
@@ -59,3 +68,8 @@ Note that the "Completed run" message appears *before* the "Pre
 emscripten_wget" print statement.  This indicates that _simple_demo
 returned before the emscripten_wget function did.  This must mean that
 emscripten_wget is running asynchronously.
+
+Also note that the wget seems to have terminated abruptly and
+effectively does a no-op.  There are no exceptions and no errors, and
+for some reason, neither the success callback nor the error callback
+are invoked.
