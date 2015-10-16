@@ -30,7 +30,28 @@ var page = pageMod.PageMod({
                                             createInstance(Ci.nsIBinaryInputStream);
                                       bstream.setInputStream(aInputStream);
                                       var bytes = bstream.readBytes(bstream.available());
+
+                                      // Ok, now this part is total
+                                      // bullshit.  You need to
+                                      // convert the bytes into an
+                                      // array of uints and then have
+                                      // it cast back to raw bytes in
+                                      // C.
+                                      // Extract each of `bytes.charCodeAt(index)`
+                                      // and stuff it into an integer
+                                      // array and pass it into C.
+                                      // TODO: create an integer array
+                                      // and pass it in.
                                       console.log("Read " + bytes.length + " bytes");
+
+                                      var addon_demo_mod = require("./emscr/addon_demo").factory();
+                                      console.log("Addon Demo Mod: " + addon_demo_mod);
+
+                                      var result = addon_demo_mod.ccall('start_demo', // name of C function
+                                          null, // return type
+                                          ['number', 'string'], // argument types
+                                          [bytes.length, bytes]); // arguments
+
                                   }
                               });
                       } catch (e) {
