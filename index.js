@@ -4,6 +4,9 @@ var pageMod = require("sdk/page-mod");
 
 var {Cc, Ci, Cu, Cr, Cm, components} = require("chrome");
 
+// Import NetUtil
+Cu.import("resource://gre/modules/NetUtil.jsm");
+
 var page = pageMod.PageMod({
     include: "*",
     contentScriptWhen: "start",
@@ -15,11 +18,21 @@ var page = pageMod.PageMod({
                   worker.port.on("run_emscr_wget", function(addonMessage) {
                       console.log("Addon received message: ["+addonMessage+"]");
                       try {
-                          var addon_demo_mod = require("./emscr/addon_demo").factory();
-                          console.log("Addon Demo Mod: " + addon_demo_mod);
-
-                          addon_demo_mod._start_demo();
-                          console.log("Completed run.  Everything is ok!");
+                          NetUtil.asyncFetch("http://127.0.0.1:8000/simple.trie", 
+                              function(aInputStream, aResult) {
+                                  // Check that we had success.
+                                  if (!components.isSuccessCode(aResult))
+                                  {
+                                      console.log("An error occured: " + aResult);
+                                  } else {
+                                      console.log("Success!");
+                                      var bstream = Cc["@mozilla.org/binaryinputstream;1"].
+                                            createInstance(Ci.nsIBinaryInputStream);
+                                      bstream.setInputStream(aInputStream);
+                                      var bytes = bstream.readBytes(bstream.available());
+                                      console.log("Read " + bytes.length + " bytes");
+                                  }
+                              });
                       } catch (e) {
                           console.log(e);
                       }
