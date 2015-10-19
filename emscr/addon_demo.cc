@@ -10,7 +10,7 @@ void EMSCRIPTEN_KEEPALIVE runHttpTrie() {
 
 }
 
-void EMSCRIPTEN_KEEPALIVE start_demo(int length, char* payload) {
+void EMSCRIPTEN_KEEPALIVE start_demo(int length, int* payload) {
     printf("Got %d bytes inside emscripten!\n", length);
     printf("Start =================\n");
     for (int i=0; i < length; i++) {

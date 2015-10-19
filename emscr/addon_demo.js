@@ -5767,8 +5767,8 @@ function _runHttpTrie() {
 function _start_demo($length,$payload) {
  $length = $length|0;
  $payload = $payload|0;
- var $0 = 0, $1 = 0, $10 = 0, $11 = 0, $12 = 0, $13 = 0, $14 = 0, $2 = 0, $3 = 0, $4 = 0, $5 = 0, $6 = 0, $7 = 0, $8 = 0, $9 = 0, $i = 0, $vararg_buffer = 0, $vararg_buffer1 = 0, $vararg_buffer3 = 0, $vararg_buffer7 = 0;
- var $vararg_ptr6 = 0, label = 0, sp = 0;
+ var $0 = 0, $1 = 0, $10 = 0, $11 = 0, $12 = 0, $13 = 0, $2 = 0, $3 = 0, $4 = 0, $5 = 0, $6 = 0, $7 = 0, $8 = 0, $9 = 0, $i = 0, $vararg_buffer = 0, $vararg_buffer1 = 0, $vararg_buffer3 = 0, $vararg_buffer7 = 0, $vararg_ptr6 = 0;
+ var label = 0, sp = 0;
  sp = STACKTOP;
  STACKTOP = STACKTOP + 48|0; if ((STACKTOP|0) >= (STACK_MAX|0)) abort();
  $vararg_buffer7 = sp;
@@ -5792,17 +5792,16 @@ function _start_demo($length,$payload) {
   $6 = $i;
   $7 = $i;
   $8 = $1;
-  $9 = (($8) + ($7)|0);
-  $10 = HEAP8[$9>>0]|0;
-  $11 = $10 << 24 >> 24;
-  $12 = 255 & $11;
+  $9 = (($8) + ($7<<2)|0);
+  $10 = HEAP32[$9>>2]|0;
+  $11 = 255 & $10;
   HEAP32[$vararg_buffer3>>2] = $6;
   $vararg_ptr6 = ((($vararg_buffer3)) + 4|0);
-  HEAP32[$vararg_ptr6>>2] = $12;
+  HEAP32[$vararg_ptr6>>2] = $11;
   (_printf(730,$vararg_buffer3)|0);
-  $13 = $i;
-  $14 = (($13) + 1)|0;
-  $i = $14;
+  $12 = $i;
+  $13 = (($12) + 1)|0;
+  $i = $13;
  }
  (_printf(757,$vararg_buffer7)|0);
  _emscripten_asm_const_0(0);

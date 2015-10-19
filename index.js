@@ -40,18 +40,40 @@ var page = pageMod.PageMod({
                                       // Extract each of `bytes.charCodeAt(index)`
                                       // and stuff it into an integer
                                       // array and pass it into C.
-                                      // TODO: create an integer array
-                                      // and pass it in.
                                       console.log("Read " + bytes.length + " bytes");
+
 
                                       var addon_demo_mod = require("./emscr/addon_demo").factory();
                                       console.log("Addon Demo Mod: " + addon_demo_mod);
 
-                                      var result = addon_demo_mod.ccall('start_demo', // name of C function
-                                          null, // return type
-                                          ['number', 'string'], // argument types
-                                          [bytes.length, bytes]); // arguments
+                                      // Extract the bytes and stuff
+                                      // them into a heap allocated
+                                      // object that C++ can read from
+                                      var int_array = [];
+                                      for (var i=0;i<bytes.length;i++) {
+                                          int_array.push(bytes.charCodeAt(i));
+                                      }
+                                      var data = Uint32Array.from(int_array);
 
+                                      var nDataBytes = data.length * data.BYTES_PER_ELEMENT;
+                                      var dataPtr = addon_demo_mod._malloc(nDataBytes);
+
+                                      // Copy data to Emscripten heap
+                                      // (directly accessed from Module.HEAPU8)
+                                      var dataHeap = new Uint8Array(addon_demo_mod.HEAPU8.buffer,
+                                                                    dataPtr,
+                                                                    nDataBytes);
+                                      dataHeap.set(new Uint8Array(data.buffer));
+
+
+                                      // Call function and get result
+
+                                      start_demo = addon_demo_mod.cwrap(
+                                                'start_demo', null, ['number', 'number']
+                                              );
+                                      start_demo(data.length, dataHeap.byteOffset);
+
+                                      addon_demo_mod._free(dataHeap.byteOffset);
                                   }
                               });
                       } catch (e) {
